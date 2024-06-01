@@ -25,9 +25,81 @@ functions:
       - http:
           path: createUser
           method: post
+          documentation:
+            summary: Crea un nuovo utente nel database.
+            description: |
+              Questo endpoint consente di creare un nuovo utente nel database DynamoDB.
+              Il payload della richiesta deve essere un oggetto JSON con i campi 'name' e 'email'.
+            requestBody:
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        description: Nome dell'utente.
+                      email:
+                        type: string
+                        format: email
+                        description: Indirizzo email dell'utente.
+            responses:
+              '201':
+                description: Utente creato con successo.
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        userId:
+                          type: string
+                          description: ID univoco generato per l'utente.
+                        name:
+                          type: string
+                          description: Nome dell'utente.
+                        email:
+                          type: string
+                          description: Indirizzo email dell'utente.
+              '400':
+                description: Errore nella richiesta.
+              '500':
+                description: Errore interno del server.
+
       - http:
           path: getUserById/{user_id}
           method: get
+          documentation:
+            summary: Ottiene le informazioni di un utente dal database utilizzando l'ID.
+            description: |
+              Questo endpoint consente di ottenere le informazioni di un utente dal database DynamoDB utilizzando l'ID utente specificato nell'URL.
+            parameters:
+              - name: user_id
+                in: path
+                required: true
+                description: ID univoco dell'utente.
+                schema:
+                  type: string
+            responses:
+              '200':
+                description: Informazioni utente ottenute con successo.
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        userId:
+                          type: string
+                          description: ID univoco dell'utente.
+                        name:
+                          type: string
+                          description: Nome dell'utente.
+                        email:
+                          type: string
+                          description: Indirizzo email dell'utente.
+              '404':
+                description: Utente non trovato.
+              '500':
+                description: Errore interno del server.
 
 resources:
   Resources:
