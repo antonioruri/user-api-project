@@ -1,0 +1,110 @@
+{
+  "/Users/antonio/user-api-project": {
+    "versionSfCore": null,
+    "versionFramework": "4.0.33",
+    "isWithinCompose": false,
+    "composeOrgName": null,
+    "servicePath": "/Users/antonio/user-api-project",
+    "serviceConfigFileName": "serverless.yml",
+    "service": {
+      "org": "antoniocaccioppola",
+      "service": "user-api",
+      "provider": {
+        "name": "aws",
+        "runtime": "python3.8",
+        "environment": {
+          "DYNAMODB_TABLE": "${self:service}-${opt:stage, self:provider.stage}"
+        },
+        "iamRoleStatements": [
+          {
+            "Effect": "Allow",
+            "Action": [
+              "dynamodb:DescribeTable",
+              "dynamodb:Query",
+              "dynamodb:Scan",
+              "dynamodb:GetItem",
+              "dynamodb:PutItem"
+            ],
+            "Resource": "arn:aws:dynamodb:*:*:table/${self:service}-${opt:stage, self:provider.stage}"
+          }
+        ]
+      },
+      "functions": {
+        "app": {
+          "handler": "handler.handler",
+          "events": [
+            {
+              "http": {
+                "path": "createUser",
+                "method": "post"
+              }
+            },
+            {
+              "http": {
+                "path": "getUserById/{user_id}",
+                "method": "get"
+              }
+            }
+          ]
+        }
+      },
+      "resources": {
+        "Resources": {
+          "UsersDynamoDBTable": {
+            "Type": "AWS::DynamoDB::Table",
+            "Properties": {
+              "TableName": "${self:service}-${opt:stage, self:provider.stage}",
+              "AttributeDefinitions": [
+                {
+                  "AttributeName": "userId",
+                  "AttributeType": "S"
+                }
+              ],
+              "KeySchema": [
+                {
+                  "AttributeName": "userId",
+                  "KeyType": "HASH"
+                }
+              ],
+              "ProvisionedThroughput": {
+                "ReadCapacityUnits": 1,
+                "WriteCapacityUnits": 1
+              }
+            }
+          }
+        }
+      }
+    },
+    "serviceRawFile": "# \"org\" ensures this Service is used with the correct Serverless Framework Access Key.\norg: antoniocaccioppola\nservice: user-api\n\nprovider:\n  name: aws\n  runtime: python3.8\n  environment:\n    DYNAMODB_TABLE: ${self:service}-${opt:stage, self:provider.stage}\n  iamRoleStatements:\n    - Effect: \"Allow\"\n      Action:\n        - \"dynamodb:DescribeTable\"\n        - \"dynamodb:Query\"\n        - \"dynamodb:Scan\"\n        - \"dynamodb:GetItem\"\n        - \"dynamodb:PutItem\"\n      Resource: \"arn:aws:dynamodb:*:*:table/${self:service}-${opt:stage, self:provider.stage}\"\n\nfunctions:\n  app:\n    handler: handler.handler\n    events:\n      - http:\n          path: createUser\n          method: post\n      - http:\n          path: getUserById/{user_id}\n          method: get\n\nresources:\n  Resources:\n    UsersDynamoDBTable:\n      Type: \"AWS::DynamoDB::Table\"\n      Properties:\n        TableName: ${self:service}-${opt:stage, self:provider.stage}\n        AttributeDefinitions:\n          - AttributeName: \"userId\"\n            AttributeType: \"S\"\n        KeySchema:\n          - AttributeName: \"userId\"\n            KeyType: \"HASH\"\n        ProvisionedThroughput:\n          ReadCapacityUnits: 1\n          WriteCapacityUnits: 1\n",
+    "command": [
+      "deploy"
+    ],
+    "options": {},
+    "error": {
+      "message": "AWS credentials appear to be invalid. Run \"serverless\" to set up AWS credentials, or learn more in our docs: http://slss.io/aws-creds-setup. Original error from AWS: \"The security token included in the request is invalid.\"",
+      "code": "AWS_CREDENTIALS_MISSING"
+    },
+    "accessKeyV2": "<REDACTED>",
+    "accessKeyV1": "<REDACTED>",
+    "orgId": "6b324353-306c-4870-a54c-1fc5c349cd44",
+    "orgName": "antoniocaccioppola",
+    "userId": "k0FjD3vD0sbWcsrQL0",
+    "dashboard": {
+      "isEnabledForService": false,
+      "requiredAuthentication": false,
+      "orgFeaturesInUse": null,
+      "orgObservabilityIntegrations": null,
+      "serviceAppId": null,
+      "serviceProvider": null,
+      "instanceParameters": null
+    },
+    "userName": "antoniocaccioppola",
+    "subscription": null,
+    "userEmail": "antonioruri9@gmail.com",
+    "serviceProviderAwsCfStackId": null,
+    "serviceProviderAwsCfStackCreated": null,
+    "serviceProviderAwsCfStackUpdated": null,
+    "serviceProviderAwsCfStackStatus": null,
+    "serviceProviderAwsCfStackOutputs": null
+  }
+}
