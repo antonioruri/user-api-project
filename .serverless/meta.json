@@ -12,8 +12,9 @@
       "provider": {
         "name": "aws",
         "runtime": "python3.8",
+        "stage": "dev",
         "environment": {
-          "DYNAMODB_TABLE": "${self:service}-${opt:stage, self:provider.stage}"
+          "DYNAMODB_TABLE": "user-api-dev"
         },
         "iamRoleStatements": [
           {
@@ -25,9 +26,11 @@
               "dynamodb:GetItem",
               "dynamodb:PutItem"
             ],
-            "Resource": "arn:aws:dynamodb:*:*:table/${self:service}-${opt:stage, self:provider.stage}"
+            "Resource": "arn:aws:dynamodb:*:*:table/user-api-dev"
           }
-        ]
+        ],
+        "region": "us-east-1",
+        "versionFunctions": true
       },
       "functions": {
         "app": {
@@ -45,7 +48,8 @@
                 "method": "get"
               }
             }
-          ]
+          ],
+          "name": "user-api-dev-app"
         }
       },
       "resources": {
@@ -53,7 +57,7 @@
           "UsersDynamoDBTable": {
             "Type": "AWS::DynamoDB::Table",
             "Properties": {
-              "TableName": "${self:service}-${opt:stage, self:provider.stage}",
+              "TableName": "user-api-dev",
               "AttributeDefinitions": [
                 {
                   "AttributeName": "userId",
@@ -75,14 +79,15 @@
         }
       }
     },
-    "serviceRawFile": "# \"org\" ensures this Service is used with the correct Serverless Framework Access Key.\norg: antoniocaccioppola\nservice: user-api\n\nprovider:\n  name: aws\n  runtime: python3.8\n  environment:\n    DYNAMODB_TABLE: ${self:service}-${opt:stage, self:provider.stage}\n  iamRoleStatements:\n    - Effect: \"Allow\"\n      Action:\n        - \"dynamodb:DescribeTable\"\n        - \"dynamodb:Query\"\n        - \"dynamodb:Scan\"\n        - \"dynamodb:GetItem\"\n        - \"dynamodb:PutItem\"\n      Resource: \"arn:aws:dynamodb:*:*:table/${self:service}-${opt:stage, self:provider.stage}\"\n\nfunctions:\n  app:\n    handler: handler.handler\n    events:\n      - http:\n          path: createUser\n          method: post\n      - http:\n          path: getUserById/{user_id}\n          method: get\n\nresources:\n  Resources:\n    UsersDynamoDBTable:\n      Type: \"AWS::DynamoDB::Table\"\n      Properties:\n        TableName: ${self:service}-${opt:stage, self:provider.stage}\n        AttributeDefinitions:\n          - AttributeName: \"userId\"\n            AttributeType: \"S\"\n        KeySchema:\n          - AttributeName: \"userId\"\n            KeyType: \"HASH\"\n        ProvisionedThroughput:\n          ReadCapacityUnits: 1\n          WriteCapacityUnits: 1\n",
+    "serviceRawFile": "# \"org\" ensures this Service is used with the correct Serverless Framework Access Key.\norg: antoniocaccioppola\nservice: user-api\n\nprovider:\n  name: aws\n  runtime: python3.8\n  stage: dev\n  environment:\n    DYNAMODB_TABLE: ${self:service}-${opt:stage, self:provider.stage}\n  iamRoleStatements:\n    - Effect: \"Allow\"\n      Action:\n        - \"dynamodb:DescribeTable\"\n        - \"dynamodb:Query\"\n        - \"dynamodb:Scan\"\n        - \"dynamodb:GetItem\"\n        - \"dynamodb:PutItem\"\n      Resource: \"arn:aws:dynamodb:*:*:table/${self:service}-${opt:stage, self:provider.stage}\"\n\nfunctions:\n  app:\n    handler: handler.handler\n    events:\n      - http:\n          path: createUser\n          method: post\n      - http:\n          path: getUserById/{user_id}\n          method: get\n\nresources:\n  Resources:\n    UsersDynamoDBTable:\n      Type: \"AWS::DynamoDB::Table\"\n      Properties:\n        TableName: ${self:service}-${opt:stage, self:provider.stage}\n        AttributeDefinitions:\n          - AttributeName: \"userId\"\n            AttributeType: \"S\"\n        KeySchema:\n          - AttributeName: \"userId\"\n            KeyType: \"HASH\"\n        ProvisionedThroughput:\n          ReadCapacityUnits: 1\n          WriteCapacityUnits: 1\n",
     "command": [
       "deploy"
     ],
     "options": {},
     "error": {
-      "message": "AWS credentials appear to be invalid. Run \"serverless\" to set up AWS credentials, or learn more in our docs: http://slss.io/aws-creds-setup. Original error from AWS: \"The security token included in the request is invalid.\"",
-      "code": "AWS_CREDENTIALS_MISSING"
+      "message": "EACCES: permission denied, mkdir '/Users/antonio/.serverless/artifacts'",
+      "stack": "Error: EACCES: permission denied, mkdir '/Users/antonio/.serverless/artifacts'",
+      "code": "EACCES"
     },
     "accessKeyV2": "<REDACTED>",
     "accessKeyV1": "<REDACTED>",
@@ -101,6 +106,10 @@
     "userName": "antoniocaccioppola",
     "subscription": null,
     "userEmail": "antonioruri9@gmail.com",
+    "serviceProviderAwsCredentials": "<REDACTED>",
+    "serviceProviderAwsAccountId": "767397701729",
+    "versionSf": "4.0.33",
+    "serviceProviderAwsCfStackName": "user-api-dev",
     "serviceProviderAwsCfStackId": null,
     "serviceProviderAwsCfStackCreated": null,
     "serviceProviderAwsCfStackUpdated": null,

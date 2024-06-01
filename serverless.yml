@@ -5,6 +5,7 @@ service: user-api
 provider:
   name: aws
   runtime: python3.8
+  stage: dev
   environment:
     DYNAMODB_TABLE: ${self:service}-${opt:stage, self:provider.stage}
   iamRoleStatements:
